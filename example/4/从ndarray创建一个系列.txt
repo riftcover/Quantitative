@@ -1,0 +1,13 @@
+#导入pandas和numpy包
+import pandas as pd  
+import numpy as np
+#利用ndarray为系列赋值
+data = np.array(['a','b','c','d'])
+s = pd.Series(data)
+print("显示系列中的索引和数据：")
+print(s)
+print()
+data = np.array(['a','b','c','d'])
+t = pd.Series(data,index=[100,101,102,103])
+print("显示系列中的索引和数据：")
+print(t)

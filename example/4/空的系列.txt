@@ -1,0 +1,5 @@
+#导入pandas包，并命名为pd
+import pandas as pd
+#创建一个空系列
+s = pd.Series()
+print(s)

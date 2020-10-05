@@ -1,0 +1,12 @@
+import pandas as pd
+dataframe1 = history(5, unit='1d', field='close', security_list='000009.XSHE', df=True, skip_paused=False, fq='pre')
+dataframe1
+
+
+import pandas as pd
+dataframe1 = history(3, unit='1d', field='high', security_list=['000001.XSHE','000009.XSHE',], df=False)
+print("两只股票近三日的最高价信息:",dataframe1)
+print("平安银行(000001)的后三条最高价信息:",dataframe1['000001.XSHE'])
+print("平安银行(000001)最新的最高价信息:",dataframe1['000001.XSHE'][0])
+print("平安银行(000001)近三日的最高价的和:",dataframe1['000001.XSHE'].sum())
+print("平安银行(000001)近三日的最高价的平均价:",dataframe1['000001.XSHE'].mean())

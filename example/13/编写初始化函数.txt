@@ -1,0 +1,11 @@
+import jqdata
+from jqlib.technical_analysis import *
+
+def initialize(context):
+    # 定义一个全局变量, 保存要操作的股票
+    # 000001(股票:平安银行)
+    g.security = '000001.XSHE'
+    # 设定沪深300作为基准
+    set_benchmark('000300.XSHG')
+    # 开启动态复权模式(真实价格)
+    set_option('use_real_price', True)

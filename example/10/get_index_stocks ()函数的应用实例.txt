@@ -1,0 +1,2 @@
+stocks = get_index_stocks('000300.XSHG')
+stocks

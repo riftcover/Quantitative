@@ -1,0 +1,14 @@
+# 股票类每笔交易时的手续费是：买入时佣金万分之三，卖出时佣金万分之三加千分之一印花税，每笔交易佣金最低扣5块钱
+set_order_cost(OrderCost(open_tax=0，close_tax=0.001，open_commission=0.0003，close_commission=0.0003，close_today_commission=0，min_commission=5)，type='stock')
+# 期货类每笔交易时的手续费是：买入时万分之0.23,卖出时万分之0.23,平今仓为万分之23
+set_order_cost(OrderCost(open_tax=0，close_tax=0，open_commission=0.000023，close_commission=0.000023，close_today_commission=0.0023，min_commission=0)，type='index_futures')
+# 单独设置000300.XSHG的费用
+set_order_cost(OrderCost(open_tax=0，close_tax=0.001，open_commission=0.0003，close_commission=0.0003，close_today_commission=0，min_commission=5)，type='stock'，ref='000300.XSHG')
+# 设置所有期货（包括金融指数期货）的费用
+set_order_cost(OrderCost(open_tax=0，close_tax=0.001，open_commission=0.0003，close_commission=0.0003，close_today_commission=0，min_commission=5)，type='futures')
+# 对股指期货的IF、IH、IC三个品种有效
+set_order_cost(OrderCost(open_tax=0，close_tax=0.001，open_commission=0.0003，close_commission=0.0003，close_today_commission=0，min_commission=5)，type='index_futures')
+# 单独设置黄金期货（AU）品种的费用
+set_order_cost(OrderCost(open_tax=0，close_tax=0.001，open_commission=0.0003，close_commission=0.0003，close_today_commission=0，min_commission=5)，type='futures'，ref='AU')
+# 单独设置黄金期货AU1809合约的费用
+set_order_cost(OrderCost(open_tax=0，close_tax=0.001，open_commission=0.0003，close_commission=0.0003，close_today_commission=0，min_commission=5)，type='futures'，ref='AU1709')

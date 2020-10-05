@@ -1,0 +1,16 @@
+#导入循环神经网络
+from pybrain.structure import RecurrentNetwork
+#导入激活函数SigmoidLayer
+from pybrain.structure import SigmoidLayer
+#创建一个变量名为n的循环神经网络
+n = RecurrentNetwork()
+# 设立循环神经网络的三层，一层输入层（有2个节点），一层隐藏层（有3个节点），一层输出层（有1个节点）
+n.addInputModule(LinearLayer(2, name='in'))
+n.addModule(SigmoidLayer(3, name='hidden'))
+n.addOutputModule(LinearLayer(1, name='out'))
+#激活循环神经网络
+n.sortModules()
+#循环神经网络的输出值
+print("神经网络的输出值：",n.activate([2,1]))
+#清空环神经网络的历史记录
+n.reset()

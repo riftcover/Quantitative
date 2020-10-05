@@ -1,0 +1,29 @@
+import numpy as np  
+import matplotlib.pyplot as plt  
+# 更新matplotlib的布局参数
+matplotlib.rcParams.update({'font.size': 16, 'font.family': 'serif'})
+x = np.arange(1,25) 
+y =  6 * x +  11 
+fig, ax = plt.subplots(figsize=(12,6))
+ax.plot(x, x+1, color="blue", linewidth=0.25)
+ax.plot(x, x+2, color="blue", linewidth=0.50)
+ax.plot(x, x+3, color="blue", linewidth=1.00)
+ax.plot(x, x+4, color="blue", linewidth=2.00)
+# 线条样式选择
+ax.plot(x, x+5, color="red", lw=2, linestyle='-',alpha=0.5)  #半透明红色
+ax.plot(x, x+6, color="#1155dd", lw=2, ls='-.')       # 浅蓝色的RGB十六进制码
+ax.plot(x, x+7, color="#15cc55", lw=2, ls=':')        # 浅绿色的RGB十六进制码
+# 自定义设置
+line, = ax.plot(x, x+8, color="black", lw=1.50)
+line.set_dashes([5, 10, 15, 10]) # 格式：线长, 间距, ...
+# 标记符号
+ax.plot(x, x+ 9, color="green", lw=2, ls='--', marker='+')
+ax.plot(x, x+10, color="green", lw=2, ls='--', marker='o')
+ax.plot(x, x+11, color="green", lw=2, ls='--', marker='s')
+ax.plot(x, x+12, color="green", lw=2, ls='--', marker='1')
+# 标记大小和颜色
+ax.plot(x, x+13, color="purple", lw=1, ls='-', marker='o', markersize=2)
+ax.plot(x, x+14, color="purple", lw=1, ls='-', marker='o', markersize=4)
+ax.plot(x, x+15, color="purple", lw=1, ls='-', marker='o', markersize=8, markerfacecolor="red")
+ax.plot(x, x+16, color="purple", lw=1, ls='-', marker='s', markersize=8, 
+        markerfacecolor="yellow", markeredgewidth=2, markeredgecolor="blue")

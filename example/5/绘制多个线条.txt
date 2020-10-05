@@ -1,0 +1,9 @@
+import numpy as np 
+from matplotlib import pyplot as plt 
+x = np.arange(1,25) 
+y =  6 * x +  11 
+a = np.arange(1,8)
+b = 3 * a - 6
+plt.figure()
+plt.plot(x,y,"oy",a,b,"*r")
+plt.show()

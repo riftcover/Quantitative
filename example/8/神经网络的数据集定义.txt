@@ -1,0 +1,18 @@
+#导入用于标准的监督学习SupervisedDataSet类
+from pybrain.datasets import SupervisedDataSet
+#定义变量ds为具有双输入和单输出的数据集
+ds = SupervisedDataSet(2, 1)
+#为变量ds数据集添加数据
+ds.addSample((0, 0), (0))
+ds.addSample((0, 1), (1))
+ds.addSample((1, 0), (1))
+ds.addSample((1, 1), (0))
+print("ds数据集中的数据数量：",len(ds))
+print("ds数据集中的数据:")
+for inpt, target in ds:
+    print(inpt, target)
+print("ds数据集中的输入数据:",ds['input'])
+print("ds数据集中的输出数据:",ds['target'])
+ds.clear()
+print("ds数据集中的输入数据:",ds['input'])
+print("ds数据集中的输出数据:",ds['target'])

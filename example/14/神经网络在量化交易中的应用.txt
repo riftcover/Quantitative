@@ -1,0 +1,80 @@
+import talib     #导入talib库
+from jqdata import *    #导入聚宽函数库
+from pybrain.datasets import ClassificationDataSet   #从pybrain的数据集中导入分类数据集
+
+test_stock = '600028.XSHG'    #设置测试标的为中国石化
+start_date = datetime.date(2013, 9, 6)   #设置开始时间
+end_date = datetime.date(2018, 8, 28)     #设置结束时间
+
+trading_days = list(get_all_trade_days())   #获取所有交易日
+start_date_index = trading_days.index(start_date)   #获取开始时间
+end_date_index = trading_days.index(end_date)      #获取结束时间
+#训练数据，8月28日之前所有的日期的数据都用来训练
+#这是一个分类数据集，参数有3个,分别是输入的特征的数目、输出的结果的数目、类别的数目
+#输入的特征的数目有3个，输出的结果只有一个结果，其中的类别是涨或者跌，所以参数是3，1，2
+trndata = ClassificationDataSet(3, 1, nb_classes=3)
+# 测试数据，8月28日的数据用来测试预测
+tstdata = ClassificationDataSet(3, 1, nb_classes=3)
+
+for index in range(start_date_index, end_date_index):
+    # 得到计算指标的所有数据
+    start_day = trading_days[index - 30]
+    end_day = trading_days[index]
+    #利用get_price()函数获得股票数据
+    stock_data = get_price(test_stock, start_date=start_day, end_date=end_day, frequency='daily', fields=['close'])
+    #变义变量并赋值为收盘价
+    close_prices = stock_data['close'].values
+    
+    #通过数据计算指标
+    # -2是保证获取的数据是昨天的，-1就是通过今天的数据计算出来的指标
+    sma_data = talib.SMA(close_prices)[-2]    #简单移动平均线指标
+    wma_data = talib.WMA(close_prices)[-2]    #加权移动平均数指标
+    mom_data = talib.MOM(close_prices)[-2]    #动量线指标
+       
+    #训练数据或者测试数据的输入特征
+    features = []
+    features.append(sma_data)
+    features.append(wma_data)
+    features.append(mom_data)
+    
+# 训练数据或者测试的标签数据，就是涨或者跌，涨用1表示，平或者跌用0表示
+    label = 0
+    if close_prices[-1] > close_prices[-2]:
+        label = 1
+    elif close_prices[-1] < close_prices[-2]:
+        label = -1
+        
+    # 8月28号之前的数据，都用作训练数据;8月28号的数据，用作测试预测
+    if index < end_date_index - 1:
+        trndata.addSample(features, [label])
+    else:
+        tstdata.addSample(features, [label])
+
+#采用独热编码将离散标称值转换为数值变量
+trndata._convertToOneOfMany( )
+tstdata._convertToOneOfMany( )            
+print('神经网络数据已准备好了！')
+
+
+#导入需要的数据包
+from pybrain.tools.shortcuts import buildNetwork
+from pybrain.supervised.trainers import BackpropTrainer
+from pybrain.structure.modules   import SoftmaxLayer
+from pybrain.utilities           import percentError
+
+#创建神经网络
+fnn = buildNetwork( trndata.indim, 5, trndata.outdim, outclass=SoftmaxLayer)
+#训练神经网络
+trainer = BackpropTrainer( fnn, dataset=trndata, momentum=0.1, verbose=True, weightdecay=0.01)
+
+#训练一次，可以通过括号里面的数字调节训练的次数
+trainer.trainEpochs( 1 )
+
+# 计算预测误差，这个是误差，不是预测准确率，0表示预测对了，100%表示预测错了
+tstresult = percentError( trainer.testOnClassData(
+           dataset=tstdata ), tstdata['class'] )
+print("预测误差:",tstresult)
+if tstresult==0 :
+    print("预测正确！")
+else :
+    print("预测错误！")

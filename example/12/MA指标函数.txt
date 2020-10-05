@@ -1,0 +1,7 @@
+#导入technical_analysis库
+from jqlib.technical_analysis import *
+#定义股票池列表
+security_list1 = '000001.XSHE'
+# 计算并输出 security_list1 的 MA 值
+MA1 = MA(security_list1, check_date='2018-08-01', timeperiod=5)
+print("平安银行的5日均线为：",MA1[security_list1])

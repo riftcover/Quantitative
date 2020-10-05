@@ -1,0 +1,11 @@
+import numpy as np 
+a = np.array([1,2,3])  
+a
+
+# dtype 参数  
+b = np.array([1,  2,  3], dtype = complex)  
+b
+
+# 多于一个维度  
+c = np.array([[1,  2],  [3,  4]], dtype = complex)  
+c

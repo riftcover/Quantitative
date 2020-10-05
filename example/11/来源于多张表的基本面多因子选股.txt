@@ -1,0 +1,11 @@
+import pandas as pd
+dataframe1 = get_fundamentals( query(indicator).filter(
+valuation.turnover_ratio > 15  ,
+balance.total_current_assets > balance.total_current_liability  ,
+cash_flow.subtotal_operate_cash_inflow > cash_flow.subtotal_operate_cash_outflow ,
+income.net_profit > 10000  ,
+indicator.gross_profit_margin > 20 
+
+                              )
+                              , date='2018-08-01')
+dataframe1['code']

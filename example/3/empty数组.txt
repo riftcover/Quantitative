@@ -1,0 +1,4 @@
+import numpy as np
+numpy3 = np.empty((2,5))
+print("全空数组，即empty数组:",numpy3)
+

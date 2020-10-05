@@ -1,0 +1,8 @@
+import pandas as pd
+dataframe1 = get_fundamentals( query(indicator).filter(
+indicator.inc_net_profit_year_on_year > 800,
+indicator.inc_revenue_year_on_year > 900,
+indicator.inc_revenue_annual > 500,
+                              )
+                              , date='2018-08-01')
+dataframe1['code']

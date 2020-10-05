@@ -1,0 +1,8 @@
+import pandas as pd
+dataframe1 = get_price('000009.XSHE',start_date='2018-09-3', end_date='2018-09-10', frequency='daily')
+print(dataframe1)
+print()
+print(dataframe1.mean())
+
+
+dataframe1.mean(1)

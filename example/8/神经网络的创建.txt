@@ -1,0 +1,44 @@
+#导入神经网络库pybrain
+from pybrain.tools.shortcuts import buildNetwork
+#创建一个变量名为net的神经网络，输入层为2个节点，隐藏层为5个节点，输出层为1个节点
+net = buildNetwork(2, 5, 1)
+print("神经网络输入层的名称：",net['in'])
+print("神经网络隐藏层的名称：",net['hidden0'])
+print("神经网络输出层的名称：",net['out'])
+#导入激活函数TanhLayer
+from pybrain.structure import TanhLayer
+#创建一个变量名为net1的神经网络，输入层为2个节点，隐藏层为3个节点，输出层为1个节点,激活函数为TanhLayer
+net1 = buildNetwork(2, 3, 1, hiddenclass=TanhLayer)
+print("神经网络隐藏层的名称：",net1['hidden0'])
+
+#导入激活函数SoftmaxLayer
+from pybrain.structure import SoftmaxLayer
+#创建一个变量名为net2的神经网络，输入层为2个节点，隐藏层为3个节点，输出层为2个节点,隐藏层激活函数为TanhLayer，输出层激活函数为SoftmaxLayer
+net2 = buildNetwork(2, 3, 2, hiddenclass=TanhLayer, outclass=SoftmaxLayer)
+print("神经网络输出层的名称：",net2['out'])
+
+net3 = buildNetwork(2, 3, 1, bias=True)
+print("神经网络偏置因子的名称：",net3['bias'])
+print("神经网络的输出值：",net3.activate([2,1]))
+
+
+def netBuild(ds):
+    # 建立神经网络fnn
+    fnn = FeedForwardNetwork()
+    # 设立神经网络的三层，一层输入层1，一层隐藏层，一层输出层
+    inLayer = LinearLayer(1, name='inLayer')
+    hiddenLayer = SigmoidLayer(1, name='hiddenLayer0')
+    outLayer = LinearLayer(1, name='outLayer')
+    # 将三层都加入神经网络（即加入神经元）
+    fnn.addInputModule(inLayer)
+    fnn.addModule(hiddenLayer)
+    fnn.addOutputModule(outLayer)
+    # 建立三层之间的连接
+    in_to_hidden = FullConnection(inLayer, hiddenLayer)
+    hidden_to_out = FullConnection(hiddenLayer, outLayer)
+    # 将连接加入神经网络
+    fnn.addConnection(in_to_hidden)
+    fnn.addConnection(hidden_to_out)
+    # 让神经网络可用
+    fnn.sortModules()
+    return fnn

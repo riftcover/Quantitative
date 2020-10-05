@@ -1,0 +1,7 @@
+mport pandas as pd
+dataframe1 = get_fundamentals( query(indicator).filter(
+indicator.inc_net_profit_annual > 300,
+indicator.inc_revenue_annual > 400,
+                              )
+                              , date='2018-08-01')
+dataframe1['code']

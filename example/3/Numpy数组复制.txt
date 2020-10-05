@@ -1,0 +1,14 @@
+import numpy as np
+numpy1 = np.array([8,6,5.2])
+numpy2 = numpy1
+print("浅复制数组中的数据：",numpy2)
+numpy2[1] = -18.6    #修改浅复制数组中的数据
+print("修改浅复制数组中的数据后：",numpy2)
+print("原数组numpy1中的数据也被修改了：",numpy1)
+print()
+numpy3 = np.zeros(3)
+numpy4 = numpy3.copy()
+print("深复制数组中的数据：",numpy4)
+numpy4[1] = -18.6    #修改深复制数组中的数据
+print("修改深复制数组中的数据后：",numpy4)
+print("原数组numpy3中的数据没有被修改：",numpy3)

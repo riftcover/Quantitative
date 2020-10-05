@@ -1,0 +1,22 @@
+import numpy as np        #导入Numpy函数包并指定导入包的别名为np
+from sklearn.datasets import load_iris #导入包中的数据
+from sklearn.naive_bayes import GaussianNB #导入高斯朴素贝叶斯算法
+iris = load_iris()   #load_iris是sklearn的测试数据，在这用来做高斯朴素贝叶斯
+#变量X为数据iris的前4项属性，即花萼长度、花萼宽度、花瓣长度、花瓣宽度
+x = iris.data
+#变量y为数据iris的第5项属性,即花的类型,其中0表示setosa,1表示versicolour,2表示virginica
+y = iris.target
+#调用高斯朴素贝叶斯分类器
+clf=GaussianNB()  
+#进行训练，其中x, y分别为训练集和训练集的标签
+clf.fit(x,y)
+#变量data为numpy数据
+data=np.array([6,4,6,2])
+#预测data数据属于花的哪个类型
+clf.predict(data.reshape(1,-1)) 
+#预测iris中第1个数据属于花的哪个类型
+print(clf.predict(iris.data[0].reshape(1,-1)))
+#预测iris中第60个数据属于花的哪个类型
+print(clf.predict(iris.data[59].reshape(1,-1)))
+#预测iris中第140个数据属于花的哪个类型
+print(clf.predict(iris.data[139].reshape(1,-1)))

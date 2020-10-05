@@ -1,0 +1,38 @@
+# 导入需要的数据包
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import svm, datasets
+#load_iris是sklearn的测试数据，在这用来做支持向量机
+iris = datasets.load_iris()  
+#变量X为数据iris的前2项属性，即花萼长度、花萼宽度
+X = iris.data[:, :2]
+#变量y为数据iris的第5项属性,即花的类型,其中0表示setosa,1表示versicolour,2表示virginica
+y = iris.target
+#调用支持向量机分类器
+svc = svm.SVC(C=1,kernel='rbf', gamma=100)
+#进行支持向量机模型的训练,其中X, y分别为训练集和训练集的标签
+svc.fit(X, y)
+#变量x_min为数据iris的前1项属性的最小值减1
+x_min = X[:, 0].min() - 1
+#变量x_max为数据iris的前1项属性的最大值加1
+x_max = X[:, 0].max() + 1
+#变量y_min为数据iris的前2项属性的最小值减1
+y_min = X[:, 1].min() - 1
+#变量y_max为数据iris的前2项属性的最大值加1
+y_max = X[:, 1].max() + 1
+h = (x_max / x_min)/100
+#从坐标向量返回坐标矩阵
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+plt.subplot(1, 1, 1)
+#变量z为svc的预测结果
+Z = svc.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+#调用plt.contourf对等高线间的填充区域进行填充（使用不同的颜色）
+plt.contourf(xx, yy, Z, cmap=plt.cm.Paired, alpha=0.6)
+#调用plt.scatter绘制散点图
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.Paired)
+plt.xlabel('花萼长度')
+plt.ylabel('花萼宽度')
+plt.xlim(xx.min(), xx.max())
+plt.title('支持向量机')
+plt.show()

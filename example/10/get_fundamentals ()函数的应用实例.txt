@@ -1,0 +1,49 @@
+import pandas as pd
+myq = query( valuation).filter( valuation.code == '000001.XSHE')
+dataframe1 = get_fundamentals(myq, '2018-4-12')
+dataframe1
+
+
+import pandas as pd
+myq = query( valuation).filter( valuation.code == '000001.XSHE')
+dataframe1 = get_fundamentals(myq, '2018-4-12')
+print("平安银行（000001）2018年4月12日的动态市盈率：",dataframe1['pe_ratio'][0])
+print("平安银行（000001）2018年4月12日的换手率：",dataframe1['turnover_ratio'][0])
+print("平安银行（000001）2018年4月12日的市销率：",dataframe1['ps_ratio'][0])
+
+
+
+import pandas as pd
+myq = query( valuation).filter(valuation.code.in_(['000001.XSHE', '600000.XSHG','000009.XSHE']))
+dataframe1 = get_fundamentals(myq, '2018-4-12')
+dataframe1
+
+
+import pandas as pd
+dataframe1 = get_fundamentals(query(
+        valuation
+    ).filter(
+        valuation.market_cap > 1000,
+        valuation.pe_ratio < 10,
+    ).order_by(
+        # 按市值降序排列
+        valuation.market_cap.desc()
+    ).limit(
+        # 最多返回100个
+        100
+    ), date='2018-4-12')
+dataframe1
+
+
+
+q = query(
+        income.statDate,
+        income.code,
+        income.basic_eps,
+        balance.cash_equivalents,
+        cash_flow.goods_sale_and_service_render_cash
+    ).filter(
+        income.code == '000001.XSHE',
+    )
+rets = [get_fundamentals(q, statDate='2016q'+str(i)) for i in range(1, 5)]
+rets

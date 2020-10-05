@@ -1,0 +1,7 @@
+import pandas as pd
+dataframe1 = get_fundamentals( query(valuation).filter(
+valuation.ps_ratio  <  0.4,
+valuation.pb_ratio  <  0.8 
+                              )
+                              , date='2018-08-01')
+dataframe1['code']

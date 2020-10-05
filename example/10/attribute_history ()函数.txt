@@ -1,0 +1,16 @@
+import pandas as pd
+dataframe1 = attribute_history('000009.XSHE',5, '1d', ('open', 'close', 'high', 'low', 'avg', 'low_limit','factor'),True,True,'pre')
+dataframe1
+
+
+dataframe1['open']['2018-04-19']
+dataframe1['open'][datetime.date(2018, 4,23)]
+dataframe1['open'][datetime.datetime(2018, 4, 20)]
+# 按行取数据
+dataframe1.iloc[-1]   #昨天的数据信息
+dataframe1.iloc[-1]['open']  #昨天的开盘价
+dataframe1.loc['2018-04-19']['open']
+# 高级运算
+dataframe1 = dataframe1[dataframe1['avg'] > 6]   #显示平均价大于6的数据
+dataframe1['open'] = dataframe1['open']/dataframe1['factor']    #让open列都跟factor列相除, 把开盘价格都转化成原始价格
+dataframe1['close'] = dataframe1['close']/ dataframe1['factor']    #让close列都跟factor列相除, 把收盘价格都转化成原始价格

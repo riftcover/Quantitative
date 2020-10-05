@@ -1,0 +1,10 @@
+import pandas as pd
+s = pd.Series([1,2,3,4,5],index = ['a','b','c','d','e'])
+print("系列中的第一个数据：",s[0])
+print("系列中的第三个数据：",s[2])
+print()
+print("系列中的前四个数据：")
+print(s[:4])
+print()
+print("系列中的后四个数据：")
+print(s[-4:])

@@ -1,0 +1,7 @@
+import pandas as pd
+dataframe1 = get_fundamentals( query(indicator).filter(
+indicator.roe > 15  ,
+indicator.roa > 8
+                              )
+                              , date='2018-08-01')
+dataframe1['code']

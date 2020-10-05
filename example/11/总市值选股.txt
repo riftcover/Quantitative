@@ -1,0 +1,6 @@
+import pandas as pd
+dataframe1 = get_fundamentals( query(valuation).filter(
+valuation.market_cap > 15000
+                              )
+                              , date='2018-08-01')
+dataframe1['code']

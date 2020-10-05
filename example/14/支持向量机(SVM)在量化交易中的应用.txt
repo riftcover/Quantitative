@@ -1,0 +1,56 @@
+import talib     #导入talib库
+from jqdata import *    #导入聚宽函数库
+
+test_stock = '600036.XSHG'    #设置测试标的为招商银行
+start_date = datetime.date(2016, 3, 2)   #设置开始时间
+end_date = datetime.date(2019, 1, 3)     #设置结束时间
+
+trading_days = list(get_all_trade_days())   #获取所有交易日
+start_date_index = trading_days.index(start_date)   #获取开始时间
+end_date_index = trading_days.index(end_date)      #获取结束时间
+
+x_all = []     #定义两个列表变量
+y_all = []
+for index in range(start_date_index, end_date_index):
+    # 得到计算指标的所有数据
+    start_day = trading_days[index - 30]
+    end_day = trading_days[index]
+    #利用get_price()函数获得股票数据
+    stock_data = get_price(test_stock, start_date=start_day, end_date=end_day, frequency='daily', fields=['close'])
+    #变义变量并赋值为收盘价
+    close_prices = stock_data['close'].values
+    #通过数据计算指标
+    # -2是保证获取的数据是昨天的，-1就是通过今天的数据计算出来的指标
+    ema_data = talib.EMA(close_prices)[-2]  #指数移动平均线指标
+    rsi_data = talib.RSI(close_prices)[-2]  #RSI指标
+    features = []
+    features.append(ema_data)     #向列表变量中添加指数移动平均线指标和RSI指标
+    features.append(rsi_data)
+    label = False                    #设置变量label为布尔变量，并赋值为False 
+    if close_prices[-1] > close_prices[-2]:
+        label = True                 #如果今天收盘价大于昨天收盘价，则变量label为True
+    x_all.append(features)      
+    y_all.append(label)
+    
+
+
+x_train = x_all[: -1]
+y_train = y_all[: -1]
+x_test = x_all[-1]
+y_test = y_all[-1]
+print('支持向量机(SVM)数据已准备好了！')
+
+
+#导入支持向量机(SVM)
+from sklearn import svm
+#开始利用支持向量机(SVM)机器学习算法计算
+clf = svm.SVC()
+#训练的代码
+clf.fit(x_train, y_train)
+#得到测试结果
+prediction = clf.predict(x_test)
+#利用if语句判断是否预测正确
+if prediction == y_test :
+    print("预测正确！")
+else:
+    print("预测错误！")

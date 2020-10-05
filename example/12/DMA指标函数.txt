@@ -1,0 +1,14 @@
+#导入technical_analysis库
+from jqlib.technical_analysis import *
+# 定义股票池列表
+security_list1 = '000001.XSHE'
+security_list2 = ['000001.XSHE','000002.XSHE','601211.XSHG','600001.XSHG']
+# 计算并输出 security_list1 的 DMA 值
+DIF1,DIFMA1 = DMA(security_list1,check_date='2017-01-04', N1 = 10, N2 = 50, M = 10)
+print(DIF1[security_list1])
+print(DIFMA1[security_list1])
+# 输出 security_list2 的 DMA 值
+DIF2,DIFMA2 = DMA(security_list2,check_date='2017-01-04', N1 = 10, N2 = 50, M = 10)
+for stock in security_list2:
+    print(DIF2[stock])
+    print(DIFMA2[stock])

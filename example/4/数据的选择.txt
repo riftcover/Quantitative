@@ -1,0 +1,26 @@
+import pandas as pd
+dataframe1 = get_price('000009.XSHE',start_date='2018-07-3', end_date='2018-09-10', frequency='daily')
+dataframe1["open"]
+
+dataframe1[["open","close","money"]]
+
+dataframe1[3:6]
+
+dataframe1.loc["2018-09-6"]
+
+dataframe1.loc["2018-09-6","close"]
+
+
+dataframe1.loc["2018-09-13":"2018-09-6","close"]
+
+df.iloc[2,3]
+
+dataframe1.ix[1,1]
+dataframe1.ix['a':'b']
+
+
+dataframe1[(dataframe1.close>5.15) & (dataframe1.volume>26000000)]
+
+dataframe1[dataframe1>5.15] = 0
+dataframe1
+

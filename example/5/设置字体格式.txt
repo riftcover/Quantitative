@@ -1,0 +1,13 @@
+import numpy as np  
+import matplotlib.pyplot as plt  
+# 更新matplotlib的布局参数
+matplotlib.rcParams.update({'font.size': 18, 'font.family': 'serif'})
+x = np.arange(1,25) 
+y =  6 * x +  11 
+fig, ax = plt.subplots()
+ax.plot(x, x**2, label=r"$y = \alpha^2$")
+ax.plot(x, x**3, label=r"$y = \alpha^3$")
+ax.legend(loc=2) # 左上角
+ax.set_xlabel(r'$\alpha$')
+ax.set_ylabel(r'$y$')
+ax.set_title('设置字体格式')

@@ -1,0 +1,78 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from pybrain.structure import *
+from pybrain.datasets import SupervisedDataSet
+from pybrain.supervised.trainers import BackpropTrainer
+
+#定义神经网络的数据集函数generate_data()
+def generate_data():
+    #随机产生200个随机数，范围在-1~1之间
+    u = np.random.uniform(-1,1,200)
+    y=[]
+    former_y_value = 0
+    #利用for循环为变量赋值
+    for i in np.arange(0,200):
+        y.append(former_y_value)
+        next_y_value = (29 / 40) * np.sin(
+            (16 * u[i] + 8 * former_y_value) / (3 + 4 * (u[i] ** 2) + 4 * (former_y_value ** 2))) \
+                       + (2 / 10) * u[i] + (2 / 10) * former_y_value
+        former_y_value = next_y_value
+    return u,y
+
+
+#获取数据集函数generate_data()的值
+u,y = generate_data()
+#定义神经网络
+fnn = FeedForwardNetwork()
+#设立神经网络的三层，一层输入层（有2个节点），一层隐藏层（有10个节点），一层输出层（有1个节点）
+inLayer = LinearLayer(2, name='inLayer')
+hiddenLayer0 = SigmoidLayer(10, name='hiddenLayer0')
+outLayer = LinearLayer(1, name='outLayer')
+#将三层都加入神经网络（即加入神经元）
+fnn.addInputModule(inLayer)
+fnn.addModule(hiddenLayer0)
+fnn.addOutputModule(outLayer)
+#建立三层之间的连接
+in_to_hidden0 = FullConnection(inLayer,hiddenLayer0)
+hidden0_to_out = FullConnection(hiddenLayer0, outLayer)
+#将连接加入神经网络
+fnn.addConnection(in_to_hidden0)
+fnn.addConnection(hidden0_to_out)
+#让神经网络可用
+fnn.sortModules()
+
+
+#定义变量DS为具有双输入和单输出的数据集
+DS = SupervisedDataSet(2,1)
+#利用for循环语句为变量DS数据集添加数据
+for i in np.arange(199):
+    DS.addSample([u[i],y[i]],[y[i+1]])
+#为变量X和Y赋值为输入值和输出值
+X = DS['input']
+Y = DS['target']
+#把数据集切分成训练集和测试集，其中训练集为80%，测试集为20%
+dataTrain, dataTest = DS.splitWithProportion(0.8)
+#定义变量，把训练集和测试集分别表示出来
+xTrain, yTrain = dataTrain['input'],dataTrain['target']
+xTest, yTest = dataTest['input'], dataTest['target']
+
+
+#训练器采用BP算法，verbose=True即训练时会把Total error打印出来
+trainer = BackpropTrainer(fnn, dataTrain, verbose=True,learningrate=0.01)
+#maxEpochs即需要的最大收敛迭代次数，这里采用的方法是训练至收敛，一般设为1000
+trainer.trainUntilConvergence(maxEpochs=1000)
+
+#定义变量predict_resutl，并利用for循环为其赋值
+predict_resutl=[]
+for i in np.arange(len(xTest)):
+    predict_resutl.append(fnn.activate(xTest[i])[0])
+#调用figure()函数绘制一个图形
+plt.figure()
+#调用plot()函数绘制线条或标记的轴
+plt.plot(np.arange(0,len(xTest)), predict_resutl, 'ro--', label='预测值')
+plt.plot(np.arange(0,len(xTest)), yTest, 'ko-', label='实际值')
+#调用legend()函数为图像添加图题
+plt.legend()
+plt.xlabel("x坐标")
+plt.ylabel("y坐标")
+plt.show()

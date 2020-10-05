@@ -1,0 +1,5 @@
+import pandas as pd
+data = {"name":["yahoo","google","facebook"], "marks":[200,400,800], "price":[9, 3, 7]}
+dataframe1 = pd.DataFrame(data) 
+print("显示dataframe1中的数据：")
+print(dataframe1)

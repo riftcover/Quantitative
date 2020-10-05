@@ -1,0 +1,61 @@
+import talib     #导入talib库
+from jqdata import *    #导入聚宽函数库
+
+test_stock = '600547.XSHG'    #设置测试标的为山东黄金
+start_date = datetime.date(2011, 6, 2)   #设置开始时间
+end_date = datetime.date(2018, 11, 28)     #设置结束时间
+
+trading_days = list(get_all_trade_days())   #获取所有交易日
+start_date_index = trading_days.index(start_date)   #获取开始时间
+end_date_index = trading_days.index(end_date)      #获取结束时间
+
+
+x_all = []     #定义两个列表变量
+y_all = []
+
+for index in range(start_date_index, end_date_index):
+    # 得到计算指标的所有数据
+    start_day = trading_days[index - 30]
+    end_day = trading_days[index]
+    #利用get_price()函数获得股票数据
+    stock_data = get_price(test_stock, start_date=start_day, end_date=end_day, frequency='daily', fields=['close'])
+    #变义变量并赋值为收盘价
+    close_prices = stock_data['close'].values
+    
+    #通过数据计算指标
+    # -2是保证获取的数据是昨天的，-1就是通过今天的数据计算出来的指标
+    wma_data = talib.WMA(close_prices)[-2]  #加权均线指标
+    roc_data = talib.ROC(close_prices)[-2]  #变动率指标
+       
+    features = []
+    features.append(wma_data)     #添加加权均线指标、变动率指标和随机相对强弱指标
+    features.append(roc_data)
+        
+    label = False                    #设置变量label为布尔变量，并赋值为False 
+    if close_prices[-1] > close_prices[-2]:
+        label = True                 #如果今天收盘价大于昨天收盘价，则变量label为True
+    x_all.append(features)      
+    y_all.append(label)
+    
+
+# 准备随机森林算法需要用到的数据
+x_train = x_all[: -1]
+y_train = y_all[: -1]
+x_test = x_all[-1]
+y_test = y_all[-1]
+print('朴素贝叶斯数据已准备好了！')
+
+
+
+from sklearn.naive_bayes import GaussianNB   #导入朴素贝叶斯分类器
+#调用朴素贝叶斯分类器
+clf = GaussianNB()
+#训练的代码
+clf.fit(x_train, y_train)
+#得到测试结果的代码
+prediction = clf.predict(x_test)
+
+if prediction == y_test :
+    print("预测正确！")
+else:
+    print("预测错误！")

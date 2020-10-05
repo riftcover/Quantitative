@@ -1,0 +1,7 @@
+set_universe(['000001.XSHE'])
+def handle_data(context, data):
+    current_data = get_current_data()
+    print(current_data)
+    print (current_data['000001.XSHE'])
+    print(current_data['000001.XSHE'].paused)#查询股票当天是否停牌
+    print (current_data['000001.XSHE'].high_limit) #获取当天的涨停价

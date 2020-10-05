@@ -1,0 +1,6 @@
+class MA10(Factor):
+    name = 'ma10'
+    max_window =10
+    dependencies = ['close']
+    def calc(self, data):
+        return data['close'][-10:].mean()

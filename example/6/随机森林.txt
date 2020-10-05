@@ -1,0 +1,26 @@
+from sklearn.datasets import load_iris    #导入测试数据load_iris
+from sklearn.ensemble import RandomForestClassifier   #导入随机森林分类器
+import pandas as pd    
+import numpy as np
+
+iris = load_iris()
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+#利用随机数函数numpy.random.uniform产生具有均匀分布的数组，数组值小于0.6显示为True，否则显示为False
+df['is_train'] = np.random.uniform(0, 1, len(df)) <= 0.6
+#利用pd.Categorical.from_codes从代码和类别数组中创建类别类型,即花的种类：setosa versicolour virginica
+df['species'] = pd.Categorical.from_codes(iris.target, iris.target_names)
+#变量train为数组值小于0.6的数据信息
+train= df[df['is_train']==True]
+#变量features为数据load_iris的前4项属性，即花萼长度、花萼宽度、花瓣长度、花瓣宽度
+features = df.columns[:4]
+#调用随机森林分类器，并设置用于拟合和预测的并行运行的工作（作业）数量为2
+clf = RandomForestClassifier(n_jobs=2)
+#调用pd.factorize函数将train['species']中的数据映射为一组数字，相同的标称型映射为相同的数字
+y, _ = pd.factorize(train['species'])
+#进行随机森林模型的训练,其中train[features], y分别为训练集和训练集的标签
+clf.fit(train[features], y)
+#变量preds为预测结果
+preds = iris.target_names[clf.predict(train[features])]
+#显示交叉表,行名为实际的,列名为预测的
+pd.crosstab(train['species'], preds, rownames=['实际的花类型'], colnames=['预测的花类型'])
+

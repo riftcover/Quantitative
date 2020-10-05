@@ -1,0 +1,9 @@
+# 含有 8 个 1 的数组，默认类型为 float  
+import numpy as np 
+x = np.ones(8)
+x
+
+#多于一维的ones数组，并且数据类型为整型
+y = np.ones((4,4), dtype =  int)  
+y
+

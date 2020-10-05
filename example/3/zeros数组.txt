@@ -1,0 +1,12 @@
+# 含有 6 个 0的数组，默认类型为 float  
+import numpy as np 
+x = np.zeros(6)  
+x
+
+#含有 6 个 0的数组，设置数据类型为 int
+y = np.zeros(6, dtype = np.int)  
+y
+
+#多于一维数组，设置数据类型为 int
+z = np.zeros((3,3), dtype = np.int)  
+z

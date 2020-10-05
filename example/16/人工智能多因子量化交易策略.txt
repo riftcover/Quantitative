@@ -1,0 +1,135 @@
+#导入数据包
+import pandas as pd   
+import numpy as np
+import math    
+from sklearn.svm import SVR   
+from sklearn.model_selection import GridSearchCV  
+from sklearn.model_selection import learning_curve
+from sklearn.linear_model import LinearRegression
+from sklearn.ensemble import RandomForestRegressor
+import jqdata
+#编写初始化函数
+def initialize(context):
+    #为全局变量赋值
+    g.days = 0
+    g.refresh_rate = 6   #股票交易的频率为6天,即每6个交易日进行一次机器学习算法(每6个交易日进行一次调仓，将不在机器学习算法选出的股票卖出)
+    g.stocknum = 5       #持有股票个数为5
+     #设定沪深300作为基准
+    set_benchmark('000300.XSHG')
+    #开启动态复权模式(真实价格)
+    set_option('use_real_price', True)
+    #过滤掉order系列API产生的比error级别低的log
+    log.set_level('order', 'error')
+    #指定周期性交易函数
+    run_daily(trade, 'every_bar')
+
+#自定义交易函数
+def trade(context):
+    #如果g.days能整除6,就运行if下面的代码,否则直接运行最后一句,即g.days = g.days + 1 
+    if g.days % 6 == 0:
+        #利用get_index_stocks ()函数可以获取一个指数给定日期在平台可交易的成分股列表,在这里获得的是沪深300成本股,日期为默认日期
+        sample = get_index_stocks('000300.XSHG', date = None)
+
+
+
+ q = query(valuation.code, valuation.market_cap, balance.total_assets - balance.total_liability,
+                  balance.total_assets / balance.total_liability, income.net_profit, income.net_profit + 1, 
+                  indicator.inc_revenue_year_on_year, balance.development_expenditure).filter(valuation.code.in_(sample))
+
+
+
+ df = get_fundamentals(q, date = None)
+        #列表的列头名
+        df.columns = ['code', 'log_mcap', 'log_NC', 'LEV', 'NI_p', 'NI_n', 'g', 'log_RD']
+        #调用numpy中的log函数和abs函数,为列表有各列赋值
+        df['log_mcap'] = np.log(df['log_mcap'])
+        df['log_NC'] = np.log(df['log_NC'])
+        df['NI_p'] = np.log(np.abs(df['NI_p']))
+        df['NI_n'] = np.log(np.abs(df['NI_n'][df['NI_n']<0]))
+        df['log_RD'] = np.log(df['log_RD'])
+        df.index = df.code.values    #设置表的索引为股票代码值
+        del df['code']               #删除股票代码列
+        #调用fillna函数将其Nan全部填充为0
+        df = df.fillna(0)
+        #如果表中的数据大于10000,则修改期值为10000
+        df[df>10000] = 10000
+        #如果表中的数据小于-10000,则修改期值为-10000
+        df[df<-10000] = -10000
+
+
+industry_set = ['801010', '801020', '801030', '801040', '801050', '801080', '801110', '801120', '801130', 
+                  '801140', '801150', '801160', '801170', '801180', '801200', '801210', '801230', '801710',
+                  '801720', '801730', '801740', '801750', '801760', '801770', '801780', '801790', '801880','801890']
+  for i in range(len(industry_set)):
+           #利用get_industry_stocks ()函数获取在给定日期一个行业的所有股票代码
+            industry = get_industry_stocks(industry_set[i], date = None)
+            s = pd.Series([0]*len(df), index=df.index)
+            s[set(industry) & set(df.index)]=1
+            df[industry_set[i]] = s
+        #机器训练的X标签数据   
+        X = df[['log_NC', 'LEV', 'NI_p', 'NI_n', 'g', 'log_RD','801010', '801020', '801030', '801040', '801050', 
+                '801080', '801110', '801120', '801130', '801140', '801150', '801160', '801170', '801180', '801200', 
+                '801210', '801230', '801710', '801720', '801730', '801740', '801750', '801760', '801770', '801780', 
+                '801790', '801880', '801890']]
+        #机器训练的Y标签数据
+        Y = df[['log_mcap']]
+        #调用fillna函数将其Nan全部填充为0
+        X = X.fillna(0)
+        Y = Y.fillna(0)
+
+
+#开始利用SVR机器学习算法计算
+        svr = SVR(kernel='rbf', gamma=0.1) 
+        #训练的代码
+        model = svr.fit(X, Y)
+
+
+#将机器学习算法运算得到的结果用到当日的股票上，计算预测值与真实值之间的差距
+        factor = Y - pd.DataFrame(svr.predict(X), index = Y.index, columns = ['log_mcap'])
+        #按照差距从小到大的顺序对股票进行排序
+        factor = factor.sort_index(by = 'log_mcap')
+
+
+#取前5只股票
+        stockset = list(factor.index[:5])
+       #客户当前账户持仓股票的代码
+        sell_list = list(context.portfolio.positions.keys())
+
+
+for stock in sell_list:
+            if stock not in stockset[:g.stocknum]:
+                stock_sell = stock
+                #如果股票代码不在stockset[:g.stocknum]中,就调用order_target_value函数卖出股票
+                order_target_value(stock_sell, 0)
+
+
+#如果持仓股票个数小于g.stocknum  
+        if len(context.portfolio.positions) < g.stocknum:
+            #num为g.stocknum减去持仓股票个数
+            num = g.stocknum - len(context.portfolio.positions)
+            #cash为客户当前账户现金除以num
+            cash = context.portfolio.cash/num
+        else:
+            #如果持仓股票个数大于g.stocknum ,则cash和num都为0
+            cash = 0
+            num = 0
+
+
+   for stock in stockset[:g.stocknum]:
+            if stock in sell_list:
+                pass
+            else:
+                stock_buy = stock
+                #如果持仓股票个数少于5,这时就会从stockset[:g.stocknum]中买进股票,即调用order_target_value函数买进股票
+                order_target_value(stock_buy, cash)
+                #变量num减1
+                num = num - 1
+                #如果num为0,则退出for循环
+                if num == 0:
+                    break
+    g.days += 1    #全局变量g.days加1
+else:
+    g.days = g.days + 1    
+
+
+

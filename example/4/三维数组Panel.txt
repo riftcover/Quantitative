@@ -1,0 +1,10 @@
+import pandas as pd
+panel1 = get_price(['000001.XSHE','000009.XSHE'],start_date='2018-09-3', end_date='2018-09-10', frequency='daily')
+panel1
+
+
+panel1['open',:,:]
+
+panel1[:,'2018-09-6',:]
+
+panel1[:,:,"000001.XSHE"]

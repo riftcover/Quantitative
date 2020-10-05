@@ -1,0 +1,15 @@
+import numpy as np                 #导入数据包
+import matplotlib.pyplot as plt 
+from mpl_toolkits.mplot3d.axes3d import Axes3D
+alpha = 0.5                         #定义全局变量
+phi_ext = 2 * np.pi * 0.5
+                                   #自定义函数
+def flux_qubit_potential(phi_m, phi_p):
+    return 2 + alpha - 2 * np.cos(phi_p) * np.cos(phi_m) - alpha * np.cos(phi_ext - 2*phi_p)
+phi_m = np.linspace(0, 2*np.pi, 100)     #numpy的均分函数linspace，把数据均分100份
+phi_p = np.linspace(0, 2*np.pi, 100)
+X,Y = np.meshgrid(phi_p, phi_m)            #numpy的meshgrid函数，实现从坐标向量返回坐标矩阵
+Z = flux_qubit_potential(X, Y).T           #调用自定义函数
+fig = plt.figure(figsize=(12,6))
+ax = fig.add_subplot(1, 1, 1, projection='3d')
+p = ax.plot_wireframe(X, Y, Z, rstride=4, cstride=4)

@@ -1,0 +1,11 @@
+import numpy as np  
+import matplotlib.pyplot as plt  
+x = np.arange(1,25) 
+y =  6 * x +  11 
+fig, ax = plt.subplots()
+ax.plot(x, x**2, label="y = x**2")
+ax.plot(x, x**2.5, label="y = x**2.5")
+ax.legend(loc=2); # 左上角
+ax.set_xlabel('x轴')
+ax.set_ylabel('y轴')
+ax.set_title('为两个图形添加图题')

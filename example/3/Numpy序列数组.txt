@@ -1,0 +1,7 @@
+import numpy as np
+numpy1 = np.arange(1,120,4)
+print("利用arange函数创建等差序列数组：",numpy1)
+print()
+numpy2 = np.linspace(0,8,20)
+print("利用linspace函数创建等差序列数组：",numpy2)
+
